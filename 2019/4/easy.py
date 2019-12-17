@@ -2,7 +2,7 @@ import sys
 
 def check_double(n):
   s = str(n)
-  return any([True for i in s if s.count(i)>=2])
+  return any([True for i in s if s.count(i+i)>=1])
 
 def check_ascending(n):
   s = str(n)
