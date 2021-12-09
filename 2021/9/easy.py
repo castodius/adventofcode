@@ -15,9 +15,7 @@ def solve():
         continue
       if x < x_len - 1 and lines[y][x+1] <= value:
         continue
-      print x, y, value
       values.append(value)
-  print values
   return len(values)+sum(values)
  
 print solve()
