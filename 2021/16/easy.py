@@ -6,8 +6,9 @@ BITS = {
   0: 15,
   1: 11
 }
-FIFTEEN_BITS = 0
-ELEVEN_BITS = 1
+
+TOTAL_LENGTH = 0
+TOTAL_PACKETS = 1
 
 def get_binary():
   line = sys.stdin.readline()
@@ -19,36 +20,37 @@ def get_binary():
 
   return binary
 
-def unpack(s):
-  print s
-  version = int(s[:3], 2)
-  print version
-  type = int(s[3:6], 2)
+def solve(index):
+  version = int(binary[index:index+3], 2)
+  index += 3
+  type = int(binary[index:index+3], 2)
+  index += 3
   if type == LITERAL:
-    return version
+    total = ''
+    while True:
+      end = binary[index] == '0'
+      total += binary[index+1:index+5]
+      index += 5
+      if end:
+        break
+    return (index, version)
   else:
-    I = int(s[6])
-    bits = BITS[I]
-    L = s[7:7+bits]
-    L = int(L, 2)
-
+    I = int(binary[index])
+    index += 1
     total = version
-    index = 7+bits
-    while index < len(s):
-      remaining = s[index:]
-      if len(remaining) == remaining.count('0'):
-        return total
+    if I == TOTAL_LENGTH:
+      max_index = index + 15 + int(binary[index:index+15], 2)
+      index += 15
+      while index < max_index:
+        index, value = solve(index)
+        total += value
+    else:
+      packets = int(binary[index:index+11], 2)
+      index += 11
+      for _ in range(packets):
+        index, value = solve(index)
+        total += value
+    return (index, total)
 
-      bits = BITS[int(s[index],2)]
-      if bits == 15:
-        index+=1
-
-      total += unpack(s[index:index+bits])
-      index+=bits-1
-    return total
-
-def solve():
-  binary = get_binary()
-  return unpack(binary)
-
-print solve()
+binary = get_binary()
+print solve(0)[1]
