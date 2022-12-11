@@ -12,7 +12,18 @@ def move(head_index, tail_index):
   head_x, head_y = head
   tail_x, tail_y = tail
 
-  if abs(head_x - tail_x) > 1:
+  if abs(head_x - tail_x) > 1 and abs(head_y - tail_y) > 1:
+    if head_x > tail_x:
+      knots[tail_index][0] += 1
+    else:
+      knots[tail_index][0] -= 1
+
+    if head_y > tail_y:
+      knots[tail_index][1] += 1
+    else:
+      knots[tail_index][1] -= 1
+
+  elif abs(head_x - tail_x) > 1:
     knots[tail_index][1] = head_y
 
     if head_x > tail_x:
@@ -33,6 +44,21 @@ def update_knots():
       break
     move(index, index+1)
 
+SCREEN_SIZE = 12
+def render():
+  screen = [['.']*SCREEN_SIZE for _ in range(SCREEN_SIZE)]
+  screen[SCREEN_SIZE//2][SCREEN_SIZE//2] = 's'
+  for index, knot in enumerate(knots[::-1]):
+    x, y = knot
+    x += SCREEN_SIZE//2
+    y += SCREEN_SIZE//2
+    screen[y][x] = 'H' if index == 9 else str(9-index)
+
+  for row in screen[::-1]:
+    print(''.join(row))
+  print()
+
+
 lines = [line for line in sys.stdin]
 for line in lines:
   dir, steps = line.strip().split(' ')
@@ -50,9 +76,6 @@ for line in lines:
 
     update_knots()
     vis.add((knots[-1][0], knots[-1][1]))
-   #print(knots)
+    #render()
 
-
-print(knots)
 print(len(vis))
-#print(vis)
