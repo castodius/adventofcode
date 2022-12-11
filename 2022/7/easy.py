@@ -2,6 +2,7 @@ import sys
 
 LIMIT = 10**5
 total = 0
+total_sizes = []
 
 class Node():
   def __init__(self, name):
@@ -9,6 +10,7 @@ class Node():
     self.parent = None
     self.children = []
     self.files = []
+    self.total_size = 0
 
   def add_child(self, child):
     child.set_parent(self)
@@ -21,18 +23,19 @@ class Node():
     self.files.append((name, size))
 
   def sum(self):
-    total_size = 0
     for file in self.files:
-      total_size += file[1]
+      self.total_size += file[1]
 
     for child in self.children:
-      total_size += child.sum()
+      self.total_size += child.sum()
 
     global total
-    if total_size <= LIMIT:
-      total += total_size
+    if self.total_size <= LIMIT:
+      total += self.total_size
 
-    return total_size
+    global total_sizes
+    total_sizes.append(self.total_size)
+    return self.total_size
     
 
 top = Node('/')
@@ -63,5 +66,14 @@ for line in sys.stdin:
   size = int(size)
   curr.add_file(name, size)
 
-top.sum()
+used = top.sum()
 print(total)
+
+free = 7*10**7 - used
+needed = 3*10**7 - free
+total_sizes.sort()
+for value in total_sizes:
+  if value < needed:
+    continue
+  print(value)
+  break
