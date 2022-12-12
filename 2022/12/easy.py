@@ -27,7 +27,6 @@ for index, line in enumerate(sys.stdin):
 VISITED = '.'
 index = 0
 queue = []
-#visited = [[False]*len(graph[0]) for _ in range(len(graph))]
 queue.append((0, 0, start_y, start_x))
 while True:
   if index == len(queue):
@@ -42,7 +41,6 @@ while True:
   if graph[y][x] == VISITED:
     continue
   graph[y][x] = VISITED
-#  visited[y][x] = True
 
   for dy, dx in [[1,0], [0,1], [-1,0], [0,-1]]:
     tmp_x = x + dx
@@ -57,8 +55,7 @@ while True:
     if letter == VISITED:
       continue
 
-    if letter - 1 <= current_letter <= letter +1:
-      queue.append((dist+1, letter, tmp_y, tmp_x))
+    if letter > current_letter +1:
+      continue
 
-#for line in visited:
-#  print(''.join(map(lambda x: '.' if x else 'X', [c for c in line])))
+    queue.append((dist+1, letter, tmp_y, tmp_x))
